@@ -34,7 +34,7 @@ public class MainMenu : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        SaveManager.ClearSaveFiles();
+        SaveParser.ClearSaveFiles();
     }
 
     public void FollowSocials(int socialId)

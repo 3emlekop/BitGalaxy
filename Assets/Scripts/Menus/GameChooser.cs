@@ -9,7 +9,7 @@ public class GameChooser : MonoBehaviour
     [Header("References")]
     [SerializeField] private Image gameModePreviewImage;
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private SaveMenu saveMenu;
+    [SerializeField] private SaveManager saveMenu;
     [SerializeField] private CameraMover cameraMover;
 
     [Header("Values")]
@@ -22,7 +22,7 @@ public class GameChooser : MonoBehaviour
 
     private void Start()
     {
-        gameModeNames = Enum.GetNames(typeof(SaveManager.GameMode));
+        gameModeNames = Enum.GetNames(typeof(SaveParser.GameMode));
         currentGameMode = (byte)PlayerPrefs.GetInt(CurrentGameModeSaveKey);
         UpdateGameModePreview();
     }
@@ -43,8 +43,8 @@ public class GameChooser : MonoBehaviour
     {
         saveMenu.UpdateButtons();
 
-        if (currentGameMode == (int)SaveManager.GameMode.Endless ||
-            currentGameMode == (int)SaveManager.GameMode.Sandbox)
+        if (currentGameMode == (int)SaveParser.GameMode.Endless ||
+            currentGameMode == (int)SaveParser.GameMode.Sandbox)
         {
             saveMenu.LoadSelectedSaveFile();
             return;
@@ -61,7 +61,7 @@ public class GameChooser : MonoBehaviour
             gameModePreviewImage.sprite = gameModeSprites[currentGameMode];
 
         titleText.text = gameModeNames[currentGameMode];
-        SaveMenu.selectedGameMode = (SaveManager.GameMode)currentGameMode;
+        SaveManager.selectedGameMode = (SaveParser.GameMode)currentGameMode;
     }
 
     private void OnDisable()

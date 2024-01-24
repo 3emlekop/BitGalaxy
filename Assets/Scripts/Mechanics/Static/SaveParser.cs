@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveManager : MonoBehaviour
+public class SaveParser : MonoBehaviour
 {
     public enum GameMode
     {
@@ -16,7 +16,7 @@ public class SaveManager : MonoBehaviour
 
     private static readonly string DefaultSavePath = Path.Combine(Application.persistentDataPath, "SaveFiles");
 
-    private static void InititializeSaveFiles()
+    private static void CheckDirectories()
     {
         if (!File.Exists(DefaultSavePath))
             Directory.CreateDirectory(DefaultSavePath);
@@ -43,18 +43,20 @@ public class SaveManager : MonoBehaviour
                 newSave = new ClassicSave(name);
                 break;
             case GameMode.Challenge:
-                return null;
+                newSave = new ChallangeSave(name);
+                break;
             case GameMode.Sandbox:
-                return null;
+                newSave = new SandboxSave(name);
+                break;
         }
         File.WriteAllText(Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode), $"{name}.json"), JsonUtility.ToJson(newSave));
         return newSave;
     }
 
-    public static Save[][] LoadSaveMatrixFromJson()
+    public static string[][] LoadSaveNames(byte maxSaveSlotCount)
     {
-        InititializeSaveFiles();
-        List<Save[]> gameModeSaves = new List<Save[]>();
+        CheckDirectories();
+        List<string[]> gameModeSaves = new List<string[]>();
         for (byte i = 0; i < Enum.GetValues(typeof(GameMode)).Length; i++)
         {
             string gameModeSaveDirectory = Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), (GameMode)i));
@@ -62,16 +64,12 @@ public class SaveManager : MonoBehaviour
             if (!Directory.Exists(gameModeSaveDirectory))
                 Debug.LogError($"Directory not found: {gameModeSaveDirectory}");
 
-            string[] files = Directory.GetFiles(gameModeSaveDirectory, "*.json");
-            Save[] savesArray = new Save[SaveMenu.instance.maxSaveSlotCount];
-            if (files.Length == 0)
-            {
-                gameModeSaves.Add(savesArray);
-                continue;
-            }
-            for(byte j = 0; j < files.Length; j++)
-                savesArray[j] = JsonUtility.FromJson<Save>(File.ReadAllText(files[j]));
-            gameModeSaves.Add(savesArray);
+            string[] paths = Directory.GetFiles(gameModeSaveDirectory, "*.json");
+            string[] fileNames = new string[maxSaveSlotCount];
+            for(byte j = 0; j < paths.Length; j++)
+                fileNames[j] = Path.GetFileNameWithoutExtension(paths[j]);
+
+            gameModeSaves.Add(fileNames);
         }
         return gameModeSaves.ToArray();
     }

@@ -1,7 +1,8 @@
-using System;
-
-[Serializable]
+[System.Serializable]
 public class ClassicSave : Save
 {
-    public ClassicSave(string name) : base(name) {}
+    public ClassicSave(string name) : base(name) 
+    {
+        
+    }
 }

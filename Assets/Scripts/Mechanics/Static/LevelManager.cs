@@ -4,31 +4,30 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    public static byte SaveSlotId { get; private set; }
-    public static Save SaveData { get; private set; }
+    public static string SaveName { get; private set; }
+    private Save saveData;
 
-    private static Dictionary<SaveManager.GameMode, byte> gameModeSceneIds = new Dictionary<SaveManager.GameMode, byte>
+    private static Dictionary<SaveParser.GameMode, byte> gameModeSceneIds = new Dictionary<SaveParser.GameMode, byte>
     {
-        {SaveManager.GameMode.Campaign, 1},
-        {SaveManager.GameMode.Classic, 3},
-        {SaveManager.GameMode.Endless, 5},
-        {SaveManager.GameMode.Challenge, 6},
-        {SaveManager.GameMode.Sandbox, 7},
+        {SaveParser.GameMode.Campaign, 1},
+        {SaveParser.GameMode.Classic, 3},
+        {SaveParser.GameMode.Endless, 5},
+        {SaveParser.GameMode.Challenge, 6},
+        {SaveParser.GameMode.Sandbox, 7},
     };
 
-    public static int GetGameModeSceneId(SaveManager.GameMode gameMode)
+    public static int GetGameModeSceneId(SaveParser.GameMode gameMode)
     {
         return gameModeSceneIds[gameMode];
     }
 
-    public static void Load(SaveManager.GameMode gameMode, byte saveSlotId, Save saveData)
+    public static void Load(SaveParser.GameMode gameMode, string saveName)
     {
         SceneManager.LoadScene(gameModeSceneIds[gameMode]);
-        SaveSlotId = saveSlotId;
-        SaveData = saveData;
+        SaveName = saveName;
     }
 
-    public static void Load(SaveManager.GameMode gameMode)
+    public static void Load(SaveParser.GameMode gameMode)
     {
         SceneManager.LoadScene(gameModeSceneIds[gameMode]);
     }

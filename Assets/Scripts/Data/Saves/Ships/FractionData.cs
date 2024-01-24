@@ -1,15 +1,23 @@
+using UnityEngine;
+
 [System.Serializable]
 public class FractionData
 {
     public string Name { get; private set; }
-    private byte[] rgb = new byte[3];
+    [SerializeField] private byte[] rgb = new byte[3] { 0, 0, 0 };
     public byte[] RGB => rgb;
-    public byte IconId { get; private set; }
+    [SerializeField] private byte iconId;
+
+    public byte IconId
+    {
+        get { return iconId; }
+        private set { iconId = value; }
+    }
 
     public FractionData(string name, byte[] color, byte iconId)
     {
         Name = name;
-        if(color.Length == 3)
+        if (color.Length == 3)
             rgb = color;
         IconId = iconId;
     }

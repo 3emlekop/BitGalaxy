@@ -10,6 +10,6 @@ public class SaveSlotButton : MonoBehaviour
 
     public void SelectSlot()
     {
-        SaveMenu.SelectSaveSlot(SaveId);
+        SaveManager.SelectSaveSlot(SaveId);
     }
 }

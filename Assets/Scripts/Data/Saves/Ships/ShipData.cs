@@ -1,26 +1,38 @@
+using UnityEngine;
+
 [System.Serializable]
 public class ShipData
 {
     public string ShipId { get; private set; }
-    public InventoryData Inventory { get; private set; }
-    public TurretData[] EquippedTurrets { get; private set; }
-    public DeviceData[] EquippedDevices { get; private set; }
-    public int MaxHealth { get; private set; }
-    public int CurrentHealth { get; private set; }
-    public byte Defence { get; private set; }
-    public byte Evasion { get; private set; }
+    [SerializeField] private InventoryData inventory;
+    [SerializeField] private TurretData[] equippedTurrets;
+    [SerializeField] private DeviceData[] equippedDevices;
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int currentHealth;
+    [SerializeField] private byte defence;
+    [SerializeField] private byte evasion;
+    
+    public InventoryData Inventory => inventory;
+    public TurretData[] EquippedTurrets => equippedTurrets;
+    public DeviceData[] EquippedDevices => equippedDevices;
+    public int MaxHealth => maxHealth;
+    public int CurrentHealth => currentHealth;
+    public byte Defence => defence;
+    public byte Evasion => evasion;
 
     public ShipData(FractionData fractionData, byte shipId)
     {
-        Inventory = new InventoryData();
-        EquippedTurrets = new TurretData[6];
-        EquippedDevices = new DeviceData[3];
-        ShipId = fractionData.Name + "Ship" + (shipId < 10 ? "0" + shipId : shipId);
+        GameObject shipPrefab = ShipManager.instance.shipPrefabs[ShipId];
+        var healthSystem = shipPrefab.GetComponent<HealthSystem>();
         
-        HealthSystem healthSystem = ShipManager.instance.shipPrefabs[ShipId].GetComponent<HealthSystem>();
-        MaxHealth = healthSystem.StartHealth;
-        Defence = healthSystem.Defence;
-        Defence = healthSystem.Evasion;
-        CurrentHealth = MaxHealth;
+        ShipId = fractionData.Name + "Ship" + (shipId < 10 ? "0" + shipId : shipId.ToString());
+        inventory = new InventoryData();
+        equippedTurrets = new TurretData[shipPrefab.GetComponent<Ship>().GetTurretCount()];
+        equippedDevices = new DeviceData[3];
+
+        maxHealth = healthSystem.StartHealth;
+        defence = healthSystem.Defence;
+        evasion = healthSystem.Evasion;
+        currentHealth = maxHealth;
     }
 }

@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveMenu : MonoBehaviour
+public class SaveManager : MonoBehaviour
 {
     [SerializeField] private Transform contentParent;
     [SerializeField] private Button saveSlotButtonPrefab;
@@ -16,10 +16,10 @@ public class SaveMenu : MonoBehaviour
     [SerializeField] private TMP_InputField saveFileNameInput;
     [SerializeField] public byte maxSaveSlotCount = 10;
 
-    public static SaveMenu instance;
-    public static SaveManager.GameMode selectedGameMode;
+    public static SaveManager instance;
+    public static SaveParser.GameMode selectedGameMode;
     private byte selectedSaveSlot = new byte();
-    private Save[][] saves;
+    private string[][] saveNames;
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class SaveMenu : MonoBehaviour
         else if (instance != this)
             Destroy(this);
 
-        LoadSaveMatrix();
+        UpdateButtons();
 
         GameObject button;
         newSaveSlotButtonTransform.SetParent(null);
@@ -43,6 +43,8 @@ public class SaveMenu : MonoBehaviour
 
     public void UpdateButtons()
     {
+        saveNames = SaveParser.LoadSaveNames(maxSaveSlotCount);
+
         selectedSaveSlot = 0;
         deleteButton.interactable = false;
         loadButton.interactable = false;
@@ -54,32 +56,27 @@ public class SaveMenu : MonoBehaviour
         }
         contentParent.GetChild(contentParent.childCount-1).gameObject.SetActive(true);
 
-        if (saves[(int)selectedGameMode] == null)
+        if (saveNames[(int)selectedGameMode] == null)
             return;
 
         GameObject button;
-        for (byte i = 0; i < saves[(int)selectedGameMode].Length; i++)
+        for (byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
         {
-            if(saves[(int)selectedGameMode][i] == null)
+            if(saveNames[(int)selectedGameMode][i] == null)
                 continue;
 
             button = contentParent.GetChild(i).gameObject;
-            button.GetComponent<SaveSlotButton>().SlotName.text = saves[(int)selectedGameMode][i].name;
+            button.GetComponent<SaveSlotButton>().SlotName.text = saveNames[(int)selectedGameMode][i];
             button.SetActive(true);
         }
     }
 
-    private void LoadSaveMatrix()
-    {
-        saves = SaveManager.LoadSaveMatrixFromJson();
-    }
-
     public void LoadSelectedSaveFile()
     {
-        if(saves[(int)selectedGameMode] == null)
+        if(saveNames[(int)selectedGameMode] == null)
             LevelManager.Load(selectedGameMode);
         else
-            LevelManager.Load(selectedGameMode, selectedSaveSlot, saves[(int)selectedGameMode][selectedSaveSlot]);
+            LevelManager.Load(selectedGameMode, saveNames[(int)selectedGameMode][selectedSaveSlot]);
     }
 
     public void OpenSaveFileCreateMenu()
@@ -100,17 +97,17 @@ public class SaveMenu : MonoBehaviour
     {
         contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(true);
         contentParent.GetChild(selectedSaveSlot).GetComponent<SaveSlotButton>().SlotName.text = saveFileNameInput.text;
-        saves[(int)selectedGameMode][selectedSaveSlot] = SaveManager.CreateNewJsonSave(saveFileNameInput.text, selectedGameMode);
+        saveNames[(int)selectedGameMode][selectedSaveSlot] = SaveParser.CreateNewJsonSave(saveFileNameInput.text, selectedGameMode).name;
     }
 
     public void ApplyInputText()
     {
-        for(byte i = 0; i < saves[(int)selectedGameMode].Length; i++)
+        for(byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
         {
-            if(saves[(int)selectedGameMode][i] == null)
+            if(saveNames[(int)selectedGameMode][i] == null)
                 break;
 
-            if(saveFileNameInput.text == saves[(int)selectedGameMode][i].name)
+            if(saveFileNameInput.text == saveNames[(int)selectedGameMode][i])
                 return;
         }
 
@@ -125,9 +122,8 @@ public class SaveMenu : MonoBehaviour
     public void DeleteSelectedSaveFile()
     {
         contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(false);
-        saves[(int)selectedGameMode][selectedSaveSlot] = null;
-        SaveManager.DeleteSaveFile(selectedSaveSlot, selectedGameMode);
-        LoadSaveMatrix();
+        saveNames[(int)selectedGameMode][selectedSaveSlot] = null;
+        SaveParser.DeleteSaveFile(selectedSaveSlot, selectedGameMode);
         UpdateButtons();
     }
 
