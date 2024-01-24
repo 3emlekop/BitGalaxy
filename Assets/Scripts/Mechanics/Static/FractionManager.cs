@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FractionManager : MonoBehaviour
 {
-    private static FractionData[] defaultFractions = new FractionData[3]
+    private static readonly FractionData[] defaultFractions = new FractionData[3]
         {
             new FractionData("Trader", new byte[3] {0,0,0}, 1),
             new FractionData("Steel", new byte[3] {0,0,0}, 2),

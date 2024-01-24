@@ -2,15 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Unity.VisualScripting;
 
-public interface ITurretOwner
-{
-    public void SetTurret(byte index, TurretData data);
-    public void SetTurretsEnabled(bool state);
-    public Turret[] GetTurrets();
-    public byte GetTurretCount();
-}
-
-public class Ship : MonoBehaviour, ITurretOwner
+public class Ship : MonoBehaviour
 {
     [SerializeField] private Transform turretParent;
 

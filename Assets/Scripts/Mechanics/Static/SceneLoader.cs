@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
     public static string SaveName { get; private set; }
-    private Save saveData;
 
-    private static Dictionary<SaveParser.GameMode, byte> gameModeSceneIds = new Dictionary<SaveParser.GameMode, byte>
+    private static readonly Dictionary<SaveParser.GameMode, byte> gameModeSceneIds = new Dictionary<SaveParser.GameMode, byte>
     {
         {SaveParser.GameMode.Campaign, 1},
         {SaveParser.GameMode.Classic, 3},
@@ -15,6 +14,11 @@ public class LevelManager : MonoBehaviour
         {SaveParser.GameMode.Challenge, 6},
         {SaveParser.GameMode.Sandbox, 7},
     };
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     public static int GetGameModeSceneId(SaveParser.GameMode gameMode)
     {
@@ -30,5 +34,6 @@ public class LevelManager : MonoBehaviour
     public static void Load(SaveParser.GameMode gameMode)
     {
         SceneManager.LoadScene(gameModeSceneIds[gameMode]);
+        SaveName = "saveFile";
     }
 }

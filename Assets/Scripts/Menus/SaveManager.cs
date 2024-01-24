@@ -49,12 +49,12 @@ public class SaveManager : MonoBehaviour
         deleteButton.interactable = false;
         loadButton.interactable = false;
 
-        for(byte i = 0; i < contentParent.childCount; i++)
+        for (byte i = 0; i < contentParent.childCount; i++)
         {
             contentParent.GetChild(i).GetComponent<Button>().interactable = true;
             contentParent.GetChild(i).gameObject.SetActive(false);
         }
-        contentParent.GetChild(contentParent.childCount-1).gameObject.SetActive(true);
+        contentParent.GetChild(contentParent.childCount - 1).gameObject.SetActive(true);
 
         if (saveNames[(int)selectedGameMode] == null)
             return;
@@ -62,7 +62,7 @@ public class SaveManager : MonoBehaviour
         GameObject button;
         for (byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
         {
-            if(saveNames[(int)selectedGameMode][i] == null)
+            if (saveNames[(int)selectedGameMode][i] == null)
                 continue;
 
             button = contentParent.GetChild(i).gameObject;
@@ -73,10 +73,7 @@ public class SaveManager : MonoBehaviour
 
     public void LoadSelectedSaveFile()
     {
-        if(saveNames[(int)selectedGameMode] == null)
-            LevelManager.Load(selectedGameMode);
-        else
-            LevelManager.Load(selectedGameMode, saveNames[(int)selectedGameMode][selectedSaveSlot]);
+        SceneLoader.Load(selectedGameMode, saveNames[(int)selectedGameMode][selectedSaveSlot]);
     }
 
     public void OpenSaveFileCreateMenu()
@@ -102,12 +99,12 @@ public class SaveManager : MonoBehaviour
 
     public void ApplyInputText()
     {
-        for(byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
+        for (byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
         {
-            if(saveNames[(int)selectedGameMode][i] == null)
+            if (saveNames[(int)selectedGameMode][i] == null)
                 break;
 
-            if(saveFileNameInput.text == saveNames[(int)selectedGameMode][i])
+            if (saveFileNameInput.text == saveNames[(int)selectedGameMode][i])
                 return;
         }
 

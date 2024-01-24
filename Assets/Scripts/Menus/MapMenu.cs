@@ -18,12 +18,12 @@ public class MapMenu : MonoBehaviour
 
     public void StartCampaignFight()
     {
-        SceneManager.LoadScene(LevelManager.GetGameModeSceneId(SaveParser.GameMode.Campaign) + 1);
+        SceneManager.LoadScene(SceneLoader.GetGameModeSceneId(SaveParser.GameMode.Campaign) + 1);
     }
 
     public void StartClassicFight()
     {
-        SceneManager.LoadScene(LevelManager.GetGameModeSceneId(SaveParser.GameMode.Classic) + 1);
+        SceneManager.LoadScene(SceneLoader.GetGameModeSceneId(SaveParser.GameMode.Classic) + 1);
     }
 
     public void ZoomOutMap()
