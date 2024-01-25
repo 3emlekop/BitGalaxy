@@ -4,7 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public static string SaveName { get; private set; }
+    public static SceneLoader instance;
+    public Save SaveData { get; private set; }
 
     private static readonly Dictionary<SaveParser.GameMode, byte> gameModeSceneIds = new Dictionary<SaveParser.GameMode, byte>
     {
@@ -17,7 +18,15 @@ public class SceneLoader : MonoBehaviour
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public static int GetGameModeSceneId(SaveParser.GameMode gameMode)
@@ -28,12 +37,12 @@ public class SceneLoader : MonoBehaviour
     public static void Load(SaveParser.GameMode gameMode, string saveName)
     {
         SceneManager.LoadScene(gameModeSceneIds[gameMode]);
-        SaveName = saveName;
+        instance.SaveData = SaveParser.LoadFromJson(saveName, gameMode);
     }
 
     public static void Load(SaveParser.GameMode gameMode)
     {
         SceneManager.LoadScene(gameModeSceneIds[gameMode]);
-        SaveName = "saveFile";
+        instance.SaveData = SaveParser.LoadFromJson("save", gameMode);
     }
 }

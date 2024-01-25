@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 
 public class Ship : MonoBehaviour
 {
+    [SerializeField] private Inventory inventory;
     [SerializeField] private Transform turretParent;
 
     public Turret[] Turrets { get; private set; }
@@ -74,5 +75,9 @@ public class Ship : MonoBehaviour
         }
         if (disableOnEnd)
             gameObject.SetActive(false);
+    }
+
+    public void ApplyData(ShipData data)
+    {
     }
 }

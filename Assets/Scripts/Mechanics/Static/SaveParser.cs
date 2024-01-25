@@ -31,6 +31,12 @@ public class SaveParser : MonoBehaviour
         File.WriteAllText(Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode), $"{save.name}.json"), JsonUtility.ToJson(save));
     }
 
+    public static Save LoadFromJson(string fileName, GameMode gameMode)
+    {
+        string gameModeSaveDirectory = Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode));
+        return JsonUtility.FromJson<Save>(File.ReadAllText(Path.Combine(gameModeSaveDirectory, fileName)));
+    }
+
     public static Save CreateNewJsonSave(string name, GameMode gameMode)
     {
         Save newSave = null;

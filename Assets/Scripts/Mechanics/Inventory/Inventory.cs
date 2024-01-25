@@ -16,4 +16,12 @@ public class Inventory : MonoBehaviour
     {
         items.Remove(item);
     }
+
+    public void ApplyData(InventoryData data)
+    {
+        foreach(var item in data.StoredItems)
+        {
+            
+        }
+    }
 }

@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ClassicHubController : MonoBehaviour
+public class ClassicHubController : GameModeController
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Ship playerShip;
+    [SerializeField] private Inventory playerInventory;
+    [SerializeField] private Transform shopItemsParent;
+    [SerializeField] private Economy playerEconomy;
 
-    // Update is called once per frame
-    void Update()
+    new private void Awake()
     {
+        base.Awake();
         
     }
 }
