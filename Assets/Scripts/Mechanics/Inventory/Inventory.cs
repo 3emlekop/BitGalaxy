@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    [SerializeField] private Item itemPrefab;
+
     private List<Item> items = new List<Item>();
 
     public int ItemsCount => items.Count;
@@ -10,6 +12,13 @@ public class Inventory : MonoBehaviour
     public void AddItem(Item item)
     {
         items.Add(item);
+    }
+
+    public void CreateItem(ItemData data)
+    {
+        var item = Instantiate(itemPrefab);
+        items.Add(item);
+        item.SetData(data);
     }
 
     public void RemoveItem(Item item)
@@ -21,7 +30,7 @@ public class Inventory : MonoBehaviour
     {
         foreach(var item in data.StoredItems)
         {
-            
+            CreateItem(item);
         }
     }
 }

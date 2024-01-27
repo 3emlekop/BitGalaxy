@@ -1,93 +1,51 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveParser : MonoBehaviour
 {
-    public enum GameMode
-    {
-        Campaign,
-        Classic,
-        Challenge,
-        Sandbox,
-        Endless,
-    }
-
     private static readonly string DefaultSavePath = Path.Combine(Application.persistentDataPath, "SaveFiles");
 
-    private static void CheckDirectories()
+    private static void CheckDirectory()
     {
-        if (!File.Exists(DefaultSavePath))
+        if(Directory.Exists(DefaultSavePath) == false)
             Directory.CreateDirectory(DefaultSavePath);
-
-        foreach (string gameModeName in Enum.GetNames(typeof(GameMode)))
-            if (!File.Exists(Path.Combine(DefaultSavePath, gameModeName)))
-                Directory.CreateDirectory(Path.Combine(DefaultSavePath, gameModeName));
     }
 
-    public static void SaveToJson(Save save, GameMode gameMode)
+    public static void SaveToJson(Save save)
     {
-        File.WriteAllText(Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode), $"{save.name}.json"), JsonUtility.ToJson(save));
+        File.WriteAllText(Path.Combine(DefaultSavePath, $"{save.name}.json"), JsonUtility.ToJson(save));
     }
 
-    public static Save LoadFromJson(string fileName, GameMode gameMode)
+    public static Save CreateNewSaveFile(string name)
     {
-        string gameModeSaveDirectory = Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode));
-        return JsonUtility.FromJson<Save>(File.ReadAllText(Path.Combine(gameModeSaveDirectory, fileName)));
-    }
-
-    public static Save CreateNewJsonSave(string name, GameMode gameMode)
-    {
-        Save newSave = null;
-        switch (gameMode)
-        {
-            case GameMode.Campaign:
-                newSave = new CampaignSave(name);
-                break;
-            case GameMode.Classic:
-                newSave = new ClassicSave(name);
-                break;
-            case GameMode.Challenge:
-                newSave = new ChallangeSave(name);
-                break;
-            case GameMode.Sandbox:
-                newSave = new SandboxSave(name);
-                break;
-        }
-        File.WriteAllText(Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode), $"{name}.json"), JsonUtility.ToJson(newSave));
+        var newSave = new Save(name);
+        SaveToJson(newSave);
         return newSave;
     }
 
-    public static string[][] LoadSaveNames(byte maxSaveSlotCount)
+    public static Save LoadFromJson(string fileName)
     {
-        CheckDirectories();
-        List<string[]> gameModeSaves = new List<string[]>();
-        for (byte i = 0; i < Enum.GetValues(typeof(GameMode)).Length; i++)
-        {
-            string gameModeSaveDirectory = Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), (GameMode)i));
-
-            if (!Directory.Exists(gameModeSaveDirectory))
-                Debug.LogError($"Directory not found: {gameModeSaveDirectory}");
-
-            string[] paths = Directory.GetFiles(gameModeSaveDirectory, "*.json");
-            string[] fileNames = new string[maxSaveSlotCount];
-            for(byte j = 0; j < paths.Length; j++)
-                fileNames[j] = Path.GetFileNameWithoutExtension(paths[j]);
-
-            gameModeSaves.Add(fileNames);
-        }
-        return gameModeSaves.ToArray();
+        return JsonUtility.FromJson<Save>(File.ReadAllText(Path.Combine(DefaultSavePath, fileName)));
     }
 
-    public static void DeleteSaveFile(byte id, GameMode gameMode)
+    public static string[] LoadSaveNames(byte maxSaveSlotCount)
     {
-        string gameModeSaveDirectory = Path.Combine(DefaultSavePath, Enum.GetName(typeof(GameMode), gameMode));
+        CheckDirectory();
+        string[] paths = Directory.GetFiles(DefaultSavePath, "*.json");
+        string[] fileNames = new string[maxSaveSlotCount];
 
-        if (!Directory.Exists(gameModeSaveDirectory))
-            Debug.LogError($"Directory not found: {gameModeSaveDirectory}");
+        for (byte j = 0; j < paths.Length; j++)
+            fileNames[j] = Path.GetFileNameWithoutExtension(paths[j]);
+        return fileNames;
+    }
 
-        string[] files = Directory.GetFiles(gameModeSaveDirectory, "*.json");
+    public static void DeleteSaveFile(byte id)
+    {
+        string[] files = Directory.GetFiles(DefaultSavePath, "*.json");
+        if(files.Length == 0)
+            Debug.LogError("Save directory doesn't contain any files to delete");
+
         try
         {
             File.Delete(files[id]);

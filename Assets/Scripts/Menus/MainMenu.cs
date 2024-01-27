@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    readonly static string[] socials =
+    private readonly string[] socials =
     {
-        "https://www.youtube.com/channel/UC2CgQJWCB1065NjZHAiMl4Q", //YouTube
+        "https://www.youtube.com/@Reejen", //YouTube
         "https://www.patreon.com/user?u=98907575", //Patreon
         "https://discord.gg/JkRNEqxbAW" //Discord
     };
@@ -13,16 +13,6 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
-    }
-
-    public void SaveGame(int saveId)
-    {
-        
-    }
-
-    public void LoadGame(int saveId)
-    {
-
     }
 
     public void LoadLevel(int levelId)

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MapMenu : MonoBehaviour
+public class HubManager : MonoBehaviour
 {
     [SerializeField] private Transform mapCanvas;
     [SerializeField] private float minScale = 0.4f;
@@ -16,14 +16,9 @@ public class MapMenu : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void StartCampaignFight()
+    public void Fight()
     {
-        SceneManager.LoadScene(SceneLoader.GetGameModeSceneId(SaveParser.GameMode.Campaign) + 1);
-    }
 
-    public void StartClassicFight()
-    {
-        SceneManager.LoadScene(SceneLoader.GetGameModeSceneId(SaveParser.GameMode.Classic) + 1);
     }
 
     public void ZoomOutMap()

@@ -17,9 +17,8 @@ public class SaveManager : MonoBehaviour
     [SerializeField] public byte maxSaveSlotCount = 10;
 
     public static SaveManager instance;
-    public static SaveParser.GameMode selectedGameMode;
     private byte selectedSaveSlot = new byte();
-    private string[][] saveNames;
+    private string[] saveNames;
 
     private void Awake()
     {
@@ -43,8 +42,6 @@ public class SaveManager : MonoBehaviour
 
     public void UpdateButtons()
     {
-        saveNames = SaveParser.LoadSaveNames(maxSaveSlotCount);
-
         selectedSaveSlot = 0;
         deleteButton.interactable = false;
         loadButton.interactable = false;
@@ -56,24 +53,18 @@ public class SaveManager : MonoBehaviour
         }
         contentParent.GetChild(contentParent.childCount - 1).gameObject.SetActive(true);
 
-        if (saveNames[(int)selectedGameMode] == null)
-            return;
-
         GameObject button;
-        for (byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
+
+        saveNames = SaveParser.LoadSaveNames(maxSaveSlotCount);
+        for (byte i = 0; i < saveNames.Length; i++)
         {
-            if (saveNames[(int)selectedGameMode][i] == null)
+            if (saveNames[i] == null)
                 continue;
 
             button = contentParent.GetChild(i).gameObject;
-            button.GetComponent<SaveSlotButton>().SlotName.text = saveNames[(int)selectedGameMode][i];
+            button.GetComponent<SaveSlotButton>().SlotName.text = saveNames[i];
             button.SetActive(true);
         }
-    }
-
-    public void LoadSelectedSaveFile()
-    {
-        SceneLoader.Load(selectedGameMode, saveNames[(int)selectedGameMode][selectedSaveSlot]);
     }
 
     public void OpenSaveFileCreateMenu()
@@ -94,17 +85,22 @@ public class SaveManager : MonoBehaviour
     {
         contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(true);
         contentParent.GetChild(selectedSaveSlot).GetComponent<SaveSlotButton>().SlotName.text = saveFileNameInput.text;
-        saveNames[(int)selectedGameMode][selectedSaveSlot] = SaveParser.CreateNewJsonSave(saveFileNameInput.text, selectedGameMode).name;
+        saveNames[selectedSaveSlot] = SaveParser.CreateNewSaveFile(saveFileNameInput.text).name;
+    }
+
+    public void LoadSelectedSaveFile()
+    {
+
     }
 
     public void ApplyInputText()
     {
-        for (byte i = 0; i < saveNames[(int)selectedGameMode].Length; i++)
+        for (byte i = 0; i < saveNames.Length; i++)
         {
-            if (saveNames[(int)selectedGameMode][i] == null)
+            if (saveNames[i] == null)
                 break;
 
-            if (saveFileNameInput.text == saveNames[(int)selectedGameMode][i])
+            if (saveFileNameInput.text == saveNames[i])
                 return;
         }
 
@@ -119,12 +115,12 @@ public class SaveManager : MonoBehaviour
     public void DeleteSelectedSaveFile()
     {
         contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(false);
-        saveNames[(int)selectedGameMode][selectedSaveSlot] = null;
-        SaveParser.DeleteSaveFile(selectedSaveSlot, selectedGameMode);
+        saveNames[selectedSaveSlot] = null;
+        SaveParser.DeleteSaveFile(selectedSaveSlot);
         UpdateButtons();
     }
 
-    public static void SelectSaveSlot(int id)
+    public void SelectSaveSlot(int id)
     {
         if (id < 0)
             Debug.LogError("Selected save slot ID is less than 0. Provided ID value: " + id);
