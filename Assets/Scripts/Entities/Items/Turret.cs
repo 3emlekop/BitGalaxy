@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(ShootAnimator))]
 public class Turret : Item
 {
+    [SerializeField] public bool isActivated = true;
     [SerializeField] private GameObject ownerShipGameObject;
     [SerializeField] private float shootTimeOffset;
 
@@ -18,8 +19,6 @@ public class Turret : Item
     {
         base.Awake();
         shootAnimator = GetComponent<ShootAnimator>();
-        if((itemData is TurretData turretData) == false)
-            Debug.LogError($"Item data type is invalid. {nameof(Turret)} accepts only item data with type '{nameof(TurretData)}'");
     }
 
     public void PrepareToShoot()
@@ -62,8 +61,9 @@ public class Turret : Item
         shootAnimator.Animate(aimDirection);
     }
 
-    public void ApplyData(TurretData data)
+    public void SetData(TurretData data)
     {
+        base.SetData(data);
         if (data == null)
         {
             turretData = null;
@@ -80,6 +80,9 @@ public class Turret : Item
             outlineSpriteRenderer.color = data.RarityColor;
         else
             outlineSpriteRenderer.color = data.Module.Color;
+
+        if(isActivated == false)
+            return;
 
         CreateBulletPool();
 

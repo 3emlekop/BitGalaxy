@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class HubManager : MonoBehaviour
 {
+    [SerializeField] private Ship playerShip;
+    [SerializeField] private Inventory playerInventory;
+    
     [SerializeField] private Transform mapCanvas;
     [SerializeField] private float minScale = 0.4f;
     [SerializeField] private float maxScale = 1.6f;
@@ -11,6 +14,18 @@ public class HubManager : MonoBehaviour
 
     private Vector3 currentScale = Vector3.one;
 
+    private void Awake()
+    {
+        if(LevelLoader.instance.Save == null)
+        {
+            Debug.LogError($"Intance of the {nameof(LevelLoader)} class is null. {nameof(HubManager)} couldn't apply its data.");
+            return;
+        }
+
+        playerShip.ApplyData(LevelLoader.instance.Save.playerShip);
+        playerInventory.ApplyData(LevelLoader.instance.Save.playerInventory);
+    }
+
     public void GoToMainMenu()
     {
         SceneManager.LoadScene(0);
@@ -18,7 +33,7 @@ public class HubManager : MonoBehaviour
 
     public void Fight()
     {
-
+        LevelLoader.instance.LoadLevel("Level");
     }
 
     public void ZoomOutMap()
@@ -53,6 +68,6 @@ public class HubManager : MonoBehaviour
 
     public void CenterMap()
     {
-
+        mapCanvas.position = Vector2.zero;
     }
 }

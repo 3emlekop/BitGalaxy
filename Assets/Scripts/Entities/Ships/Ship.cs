@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 
 public class Ship : MonoBehaviour
 {
-    [SerializeField] private Inventory inventory;
+    [SerializeField] private bool isActivatedTurrets = true;
     [SerializeField] private Transform turretParent;
 
     public Turret[] Turrets { get; private set; }
@@ -15,6 +15,9 @@ public class Ship : MonoBehaviour
     {
         shipTransform = transform;
         Turrets = GetTurrets();
+
+        foreach (var turret in Turrets)
+            turret.isActivated = isActivatedTurrets;
     }
 
     public void SetTurret(byte index, TurretData data)
@@ -22,7 +25,7 @@ public class Ship : MonoBehaviour
         if (index > GetTurretCount() - 1)
             return;
 
-        Turrets[index].ApplyData(data);
+        Turrets[index].SetData(data);
     }
 
     public byte GetTurretCount()

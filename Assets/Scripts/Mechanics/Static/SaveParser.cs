@@ -17,16 +17,9 @@ public class SaveParser : MonoBehaviour
         File.WriteAllText(Path.Combine(DefaultSavePath, $"{save.name}.json"), JsonUtility.ToJson(save));
     }
 
-    public static Save CreateNewSaveFile(string name)
-    {
-        var newSave = new Save(name);
-        SaveToJson(newSave);
-        return newSave;
-    }
-
     public static Save LoadFromJson(string fileName)
     {
-        return JsonUtility.FromJson<Save>(File.ReadAllText(Path.Combine(DefaultSavePath, fileName)));
+        return JsonUtility.FromJson<Save>(File.ReadAllText(Path.Combine(DefaultSavePath, fileName + ".json")));
     }
 
     public static string[] LoadSaveNames(byte maxSaveSlotCount)

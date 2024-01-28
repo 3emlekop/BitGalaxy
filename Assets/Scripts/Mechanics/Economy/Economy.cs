@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Economy : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI[] coinsText = new TextMeshProUGUI[2];
-    [SerializeField] private TextMeshProUGUI[] crystalsText = new TextMeshProUGUI[2];
+    [SerializeField] private TextMeshProUGUI[] coinsText = new TextMeshProUGUI[4];
+    [SerializeField] private TextMeshProUGUI[] crystalsText = new TextMeshProUGUI[4];
     public int Coins { get; private set; }
     public int Crystals { get; private set; }
 
@@ -19,12 +19,12 @@ public class Economy : MonoBehaviour
         if (PlayerPrefs.HasKey("coins"))
             Coins = PlayerPrefs.GetInt("coins");
         else
-            Coins = 250;
+            Coins = 999999;
 
         if(PlayerPrefs.HasKey("crystals"))
             Crystals = PlayerPrefs.GetInt("crystals");
         else
-            Crystals = 10;
+            Crystals = 999999;
 
         UpdateStats();
     }

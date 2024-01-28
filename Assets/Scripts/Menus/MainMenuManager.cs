@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class MainMenuManager : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private SaveManager saveManager;
+    [SerializeField] private CameraMover cameraMover;
+
     private readonly string[] socials =
     {
         "https://www.youtube.com/@Reejen", //YouTube
@@ -10,14 +14,23 @@ public class MainMenu : MonoBehaviour
         "https://discord.gg/JkRNEqxbAW" //Discord
     };
 
+    private Vector2 saveMenuPos = new Vector2(0, 10);
+
+    public void Load()
+    {
+        saveManager.UpdateSaveSlots();
+        cameraMover.MoveToPoint(saveMenuPos);
+    }
+
+    public void NewGame()
+    {
+        saveManager.CreateNewSaveFile("New game", false);
+        saveManager.LoadSaveFile("New game");
+    }
+
     public void ExitGame()
     {
         Application.Quit();
-    }
-
-    public void LoadLevel(int levelId)
-    {
-        SceneManager.LoadScene(levelId);
     }
 
     public void ResetGame()

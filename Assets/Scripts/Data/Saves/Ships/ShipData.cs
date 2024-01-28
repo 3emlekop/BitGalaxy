@@ -11,7 +11,7 @@ public class ShipData
     [SerializeField] private int currentHealth;
     [SerializeField] private byte defence;
     [SerializeField] private byte evasion;
-    
+
     public InventoryData Inventory => inventory;
     public TurretData[] EquippedTurrets => equippedTurrets;
     public DeviceData[] EquippedDevices => equippedDevices;
@@ -22,10 +22,10 @@ public class ShipData
 
     public ShipData(FractionData fractionData, byte shipId)
     {
-        GameObject shipPrefab = ShipManager.instance.shipPrefabs[ShipId];
-        var healthSystem = shipPrefab.GetComponent<HealthSystem>();
-        
         ShipId = fractionData.Name + "Ship" + (shipId < 10 ? "0" + shipId : shipId.ToString());
+        GameObject shipPrefab = ResourceManager.instance.shipPrefabs[ShipId];
+        var healthSystem = shipPrefab.GetComponent<HealthSystem>();
+
         inventory = new InventoryData();
         equippedTurrets = new TurretData[shipPrefab.GetComponent<Ship>().GetTurretCount()];
         equippedDevices = new DeviceData[3];

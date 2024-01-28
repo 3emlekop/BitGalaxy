@@ -27,8 +27,6 @@ public class SaveManager : MonoBehaviour
         else if (instance != this)
             Destroy(this);
 
-        UpdateButtons();
-
         GameObject button;
         newSaveSlotButtonTransform.SetParent(null);
         for (byte i = 0; i < maxSaveSlotCount; i++)
@@ -40,7 +38,7 @@ public class SaveManager : MonoBehaviour
         newSaveSlotButtonTransform.SetParent(contentParent);
     }
 
-    public void UpdateButtons()
+    public void UpdateSaveSlots()
     {
         selectedSaveSlot = 0;
         deleteButton.interactable = false;
@@ -54,7 +52,6 @@ public class SaveManager : MonoBehaviour
         contentParent.GetChild(contentParent.childCount - 1).gameObject.SetActive(true);
 
         GameObject button;
-
         saveNames = SaveParser.LoadSaveNames(maxSaveSlotCount);
         for (byte i = 0; i < saveNames.Length; i++)
         {
@@ -81,16 +78,25 @@ public class SaveManager : MonoBehaviour
         //not enough space popup
     }
 
-    private void CreateNewSaveFile()
+    public void CreateNewSaveFile(string name, bool selectedSlot)
     {
-        contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(true);
-        contentParent.GetChild(selectedSaveSlot).GetComponent<SaveSlotButton>().SlotName.text = saveFileNameInput.text;
-        saveNames[selectedSaveSlot] = SaveParser.CreateNewSaveFile(saveFileNameInput.text).name;
+        if (selectedSlot)
+        {
+            contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(true);
+            contentParent.GetChild(selectedSaveSlot).GetComponent<SaveSlotButton>().SlotName.text = name;
+            saveNames[selectedSaveSlot] = name;
+        }
+        SaveParser.SaveToJson(new Save(name));
     }
 
     public void LoadSelectedSaveFile()
     {
+        LevelLoader.instance.LoadLevel("Hub", saveNames[selectedSaveSlot]);
+    }
 
+    public void LoadSaveFile(string name)
+    {
+        LevelLoader.instance.LoadLevel("Hub", name);
     }
 
     public void ApplyInputText()
@@ -107,7 +113,7 @@ public class SaveManager : MonoBehaviour
         if (saveFileNameInput.text.Length > 0 && !saveFileNameInput.text.Any(Path.GetInvalidFileNameChars().Contains))
         {
             slotNamingMenu.SetActive(false);
-            CreateNewSaveFile();
+            CreateNewSaveFile(saveFileNameInput.text, true);
             saveFileNameInput.text = string.Empty;
         }
     }
@@ -117,7 +123,7 @@ public class SaveManager : MonoBehaviour
         contentParent.GetChild(selectedSaveSlot).gameObject.SetActive(false);
         saveNames[selectedSaveSlot] = null;
         SaveParser.DeleteSaveFile(selectedSaveSlot);
-        UpdateButtons();
+        UpdateSaveSlots();
     }
 
     public void SelectSaveSlot(int id)

@@ -1,28 +1,67 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
-public class ShipManager : MonoBehaviour
+public class ResourceManager : MonoBehaviour
 {
-    public static ShipManager instance;
+    public static ResourceManager instance;
 
     public Dictionary<string, GameObject> shipPrefabs = new Dictionary<string, GameObject>();
+    public List<ItemData> items = new List<ItemData>();
 
+    private readonly string[] itemTypes = new string[]
+    {
+        "Turrets", "Devices", "Modules"
+    };
     private GameObject loadedShip;
+    private string itemsPath;
 
     void Awake()
     {
+        itemsPath = Path.Combine(Application.persistentDataPath, "Items");
+
         if (instance == null)
             instance = this;
         else
+        {
             Destroy(gameObject);
-
-        DontDestroyOnLoad(gameObject);
+            return;
+        }
 
         LoadShipPrefabs();
+        DontDestroyOnLoad(gameObject);
+        CheckDirectories();
+        LoadItemsData();
     }
 
-    void LoadShipPrefabs()
+    private void CheckDirectories()
+    {
+        if(!Directory.Exists(itemsPath))
+            Directory.CreateDirectory(itemsPath);
+
+        for(byte i = 0; i < itemTypes.Length; i++)
+        {
+            if(!Directory.Exists(Path.Combine(itemsPath, itemTypes[i])))
+                Directory.CreateDirectory(Path.Combine(itemsPath, itemTypes[i]));
+        }
+
+        File.WriteAllText(Path.Combine(itemsPath, itemTypes[0], "turret.json"), JsonUtility.ToJson(new TurretData()));
+        File.WriteAllText(Path.Combine(itemsPath, itemTypes[1], "device.json"), JsonUtility.ToJson(new DeviceData()));
+        File.WriteAllText(Path.Combine(itemsPath, itemTypes[2], "module.json"), JsonUtility.ToJson(new ModuleData()));
+    }
+
+    private void LoadItemsData()
+    {
+        for(byte i = 0; i < itemTypes.Length; i++)
+        {
+            string[] files = Directory.GetFiles(Path.Combine(itemsPath, itemTypes[i]), "*.json");
+            foreach(var file in files)
+                items.Add(JsonUtility.FromJson<ItemData>(file));
+        }
+    }
+
+    private void LoadShipPrefabs()
     {
         foreach (var fraction in FractionManager.GetDefaultFractionNames())
         {

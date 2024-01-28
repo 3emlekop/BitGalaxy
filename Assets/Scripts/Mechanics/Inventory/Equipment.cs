@@ -7,7 +7,7 @@ public class Equipment : MonoBehaviour
 
     public void SetTurretData(int id, TurretData data)
     {
-        turrets[id].SetData(data);
+        turrets[id].SetData((ItemData)data);
     }
 
     public void SetDeviceData(int id, DeviceData data, Transform ship, GameObject abilityItem, float offset)

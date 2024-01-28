@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public abstract class Item : MonoBehaviour
+public class Item : MonoBehaviour
 {
-    [SerializeField] protected SpriteRenderer mainSpriteRenderer;
-    [SerializeField] protected SpriteRenderer outlineSpriteRenderer;
+    [SerializeField] protected Image mainSpriteRenderer;
+    [SerializeField] protected Image outlineSpriteRenderer;
     [SerializeField] protected ItemData itemData;
 
     public bool IsActive { get; set; }
