@@ -24,7 +24,7 @@ public class Cargo : MonoBehaviour
     private void OnEnable()
     {
         if (dropHandler.HasDrop())
-            dropVisualizeIcon.sprite = dropHandler.GetDropItem().sprite;
+            dropVisualizeIcon.sprite = dropHandler.GetDropItem().Sprite;
         else
             dropVisualizeIcon.sprite = null;
 

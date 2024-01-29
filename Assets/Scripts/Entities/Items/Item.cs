@@ -26,8 +26,8 @@ public class Item : MonoBehaviour
         }
         else
         {
-            mainSpriteRenderer.sprite = data.sprite;
-            outlineSpriteRenderer.sprite = data.sprite;
+            mainSpriteRenderer.sprite = data.Sprite;
+            outlineSpriteRenderer.sprite = data.Sprite;
             outlineSpriteRenderer.color = data.RarityColor;
         }
         itemData = data;

@@ -1,23 +1,18 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 using System.IO;
 
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager instance;
 
-    public Dictionary<string, GameObject> shipPrefabs = new Dictionary<string, GameObject>();
-    public List<ItemData> items = new List<ItemData>();
-
     private readonly string[] itemTypes = new string[]
     {
         "Turrets", "Devices", "Modules"
     };
-    private GameObject loadedShip;
     private string itemsPath;
 
-    void Awake()
+    private void Awake()
     {
         itemsPath = Path.Combine(Application.persistentDataPath, "Items");
 
@@ -29,10 +24,8 @@ public class ResourceManager : MonoBehaviour
             return;
         }
 
-        LoadShipPrefabs();
         DontDestroyOnLoad(gameObject);
         CheckDirectories();
-        LoadItemsData();
     }
 
     private void CheckDirectories()
@@ -51,56 +44,45 @@ public class ResourceManager : MonoBehaviour
         File.WriteAllText(Path.Combine(itemsPath, itemTypes[2], "module.json"), JsonUtility.ToJson(new ModuleData()));
     }
 
-    private void LoadItemsData()
+    public ItemData[] GetAllItems()
     {
+        List<ItemData> items = new List<ItemData>();
         for(byte i = 0; i < itemTypes.Length; i++)
         {
             string[] files = Directory.GetFiles(Path.Combine(itemsPath, itemTypes[i]), "*.json");
             foreach(var file in files)
                 items.Add(JsonUtility.FromJson<ItemData>(file));
         }
+        return items.ToArray();
     }
 
-    private void LoadShipPrefabs()
+    public Ship GetShip(string name)
     {
-        foreach (var fraction in FractionManager.GetDefaultFractionNames())
-        {
-            for (byte i = 0; i < 9; i++)
-            { 
-                if(i > 6 && fraction == "Steel")
-                    break;
-
-                try
-                {
-                    loadedShip = Resources.Load<GameObject>($"Prefabs/Ships/{fraction}Ship{(i < 10 ? "0" + i : i)}");
-                    shipPrefabs[loadedShip.name] = loadedShip;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Failed to load ship prefab: Prefabs/Ships/{fraction}Ship{(i < 10 ? "0" + i : i)}. Error: {e.Message}");
-                }
-            }
-        }
+        return Resources.Load<GameObject>($"Prefabs/Ships/{name}").GetComponent<Ship>();
     }
 
-    public GameObject InstantiateShip(ShipData shipData)
+    public Sprite GetSprite(string path)
     {
-        if (shipData == null)
-            throw new Exception("\'shipData\' argument for InstantiateShip() in ShipManager class is null");
+        return Resources.Load<Sprite>(Path.Combine("Textures", path));
+    }
 
-        if (shipPrefabs.ContainsKey(shipData.ShipId))
-        {
-            GameObject shipPrefab = shipPrefabs[shipData.ShipId];
-            GameObject instantiatedShip = Instantiate(shipPrefab, Vector3.zero, Quaternion.identity);
+    public Projectile GetProjectile(string name)
+    {
+        return Resources.Load<GameObject>("Prefabs/Projectiles/" + name).GetComponent<Projectile>();
+    }
 
-            // Apply ship data properties to the instantiated ship
+    public TurretData GetTurret(string name)
+    {
+        return JsonUtility.FromJson<TurretData>(Path.Combine(itemsPath, itemTypes[0], name));
+    }
 
-            return instantiatedShip;
-        }
-        else
-        {
-            Debug.LogError($"No prefab found for ship ID: {shipData?.ShipId}");
-            return null;
-        }
+    public DeviceData GetDevice(string name)
+    {
+        return JsonUtility.FromJson<DeviceData>(Path.Combine(itemsPath, itemTypes[1], name));
+    }
+
+    public ModuleData GetModule(string name)
+    {
+        return JsonUtility.FromJson<ModuleData>(Path.Combine(itemsPath, itemTypes[2], name));
     }
 }

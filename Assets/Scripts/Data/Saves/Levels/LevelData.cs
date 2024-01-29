@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Type
+public enum LevelType
 {
     normal, resource, main
 }
@@ -10,7 +10,7 @@ public enum Type
 [Serializable]
 public class LevelData
 {
-    [SerializeField] private Type levelType;
+    [SerializeField] private LevelType levelType;
     [SerializeField] private int length;
     [SerializeField] private float flySpeed;
     [SerializeField] private List<Ship> LevelShips { get; set; }

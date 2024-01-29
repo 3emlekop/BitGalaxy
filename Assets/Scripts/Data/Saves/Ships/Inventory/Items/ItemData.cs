@@ -1,18 +1,23 @@
-using System;
 using UnityEngine;
 
 public enum Rarity
 {
     common, uncommon, rare, mythic, legendary
 }
+public enum ItemType
+{
+    turret, device, module
+}
 
-public abstract class ItemData
+public class ItemData
 {
     [SerializeField] private string name;
     [SerializeField] private string description;
     [SerializeField] private int price;
     [SerializeField] private Rarity rarity;
-    [NonSerialized] public Sprite sprite;
+    [SerializeField] private ItemType itemType;
+    [SerializeField] private int spriteId;
+
 
     public string Name => name;
     public string Description => description;
@@ -38,5 +43,6 @@ public abstract class ItemData
             }
         }
     }
-    public Sprite Sprite => sprite;
+    public Sprite Sprite => ResourceManager.instance.GetSprite(name);
+    public ItemType ItemType => itemType;
 }

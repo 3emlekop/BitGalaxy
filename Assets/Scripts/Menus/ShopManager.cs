@@ -9,7 +9,7 @@ public class ShopManager : MonoBehaviour
 
     private void Awake()
     {
-        shopItems = ResourceManager.instance.items.ToArray();
+        shopItems = ResourceManager.instance.GetAllItems();
 
         foreach(var item in shopItems)
         {

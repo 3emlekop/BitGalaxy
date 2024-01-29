@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class ShipData
 {
-    public string ShipId { get; private set; }
+    public string ShipName { get; private set; }
     [SerializeField] private InventoryData inventory;
     [SerializeField] private TurretData[] equippedTurrets;
     [SerializeField] private DeviceData[] equippedDevices;
@@ -22,12 +22,12 @@ public class ShipData
 
     public ShipData(FractionData fractionData, byte shipId)
     {
-        ShipId = fractionData.Name + "Ship" + (shipId < 10 ? "0" + shipId : shipId.ToString());
-        GameObject shipPrefab = ResourceManager.instance.shipPrefabs[ShipId];
-        var healthSystem = shipPrefab.GetComponent<HealthSystem>();
+        ShipName = fractionData.Name + "Ship" + (shipId < 10 ? "0" + shipId : shipId.ToString());
+        Ship ship = ResourceManager.instance.GetShip(ShipName);
+        var healthSystem = ship.GetComponent<HealthSystem>();
 
         inventory = new InventoryData();
-        equippedTurrets = new TurretData[shipPrefab.GetComponent<Ship>().GetTurretCount()];
+        equippedTurrets = new TurretData[ship.GetTurretCount()];
         equippedDevices = new DeviceData[3];
 
         maxHealth = healthSystem.StartHealth;

@@ -18,8 +18,8 @@ public class TurretData : ItemData
     [SerializeField] private bool isBurstFire;
     [SerializeField] private bool isTimeSpread;
     [SerializeField] private Grade grade;
-    [SerializeField] private ModuleData module;
-    [SerializeField] private Projectile projectile;
+    [SerializeField] private string moduleName;
+    [SerializeField] private string projectileName;
 
     public int Damage => damage;
     public float FireRate => fireRate;
@@ -30,6 +30,6 @@ public class TurretData : ItemData
     public bool IsBurstFire => isBurstFire;
     public bool IsTimeSpread => isTimeSpread;
     public Grade Grade => grade;
-    public ModuleData Module => module;
-    public Projectile Projectile => projectile;
+    public ModuleData Module => ResourceManager.instance.GetModule(moduleName);
+    public Projectile Projectile => ResourceManager.instance.GetProjectile(projectileName);
 }
