@@ -39,9 +39,11 @@ public class ResourceManager : MonoBehaviour
                 Directory.CreateDirectory(Path.Combine(itemsPath, itemTypes[i]));
         }
 
+        /*
         File.WriteAllText(Path.Combine(itemsPath, itemTypes[0], "turret.json"), JsonUtility.ToJson(new TurretData()));
         File.WriteAllText(Path.Combine(itemsPath, itemTypes[1], "device.json"), JsonUtility.ToJson(new DeviceData()));
         File.WriteAllText(Path.Combine(itemsPath, itemTypes[2], "module.json"), JsonUtility.ToJson(new ModuleData()));
+        */
     }
 
     public ItemData[] GetAllItems()
@@ -51,7 +53,20 @@ public class ResourceManager : MonoBehaviour
         {
             string[] files = Directory.GetFiles(Path.Combine(itemsPath, itemTypes[i]), "*.json");
             foreach(var file in files)
-                items.Add(JsonUtility.FromJson<ItemData>(file));
+            {
+                switch(i)
+                {
+                    case 0:
+                        items.Add(JsonUtility.FromJson<TurretData>(File.ReadAllText(file)));
+                        break;
+                    case 1:
+                        items.Add(JsonUtility.FromJson<DeviceData>(File.ReadAllText(file)));
+                        break;
+                    case 2:
+                        items.Add(JsonUtility.FromJson<ModuleData>(File.ReadAllText(file)));
+                        break;
+                }
+            }
         }
         return items.ToArray();
     }
@@ -61,9 +76,9 @@ public class ResourceManager : MonoBehaviour
         return Resources.Load<GameObject>($"Prefabs/Ships/{name}").GetComponent<Ship>();
     }
 
-    public Sprite GetSprite(string path)
+    public Sprite GetSprite(string path, string itemName)
     {
-        return Resources.Load<Sprite>(Path.Combine("Textures", path));
+        return Resources.Load<Sprite>(Path.Combine("Textures", path, itemName));
     }
 
     public Projectile GetProjectile(string name)
@@ -71,18 +86,32 @@ public class ResourceManager : MonoBehaviour
         return Resources.Load<GameObject>("Prefabs/Projectiles/" + name).GetComponent<Projectile>();
     }
 
+    public GameObject GetAbilityObject(string name)
+    {
+        return Resources.Load<GameObject>("Prefabs/AbilityItems/" + name);
+    }
+
     public TurretData GetTurret(string name)
     {
-        return JsonUtility.FromJson<TurretData>(Path.Combine(itemsPath, itemTypes[0], name));
+        if(name == string.Empty)
+            return null;
+
+        return JsonUtility.FromJson<TurretData>(File.ReadAllText(Path.Combine(itemsPath, itemTypes[0], name)));
     }
 
     public DeviceData GetDevice(string name)
     {
-        return JsonUtility.FromJson<DeviceData>(Path.Combine(itemsPath, itemTypes[1], name));
+        if(name == string.Empty)
+            return null;
+
+        return JsonUtility.FromJson<DeviceData>(File.ReadAllText(Path.Combine(itemsPath, itemTypes[1], name)));
     }
 
     public ModuleData GetModule(string name)
     {
-        return JsonUtility.FromJson<ModuleData>(Path.Combine(itemsPath, itemTypes[2], name));
+        if(name == string.Empty)
+            return null;
+
+        return JsonUtility.FromJson<ModuleData>(File.ReadAllText(Path.Combine(itemsPath, itemTypes[2], name)));
     }
 }

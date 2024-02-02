@@ -6,7 +6,7 @@ public class Base : Ship
 
     private void Start()
     {
-        healthSystem.onDamage += CheckStage;
+        healthSystem.OnDamageEvent += CheckStage;
         SetTurretsEnabled(false);
     }
 
@@ -22,5 +22,10 @@ public class Base : Ship
 
         if(healthSystem.CurrentHealth <= healthSystem.StartHealth * 0.4f)
             SetTurretsEnabled(true);
+    }
+
+    private void OnDisable()
+    {
+        healthSystem.OnDamageEvent -= CheckStage;
     }
 }

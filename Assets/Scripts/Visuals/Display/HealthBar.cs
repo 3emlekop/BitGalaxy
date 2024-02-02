@@ -12,8 +12,8 @@ public class HealthBar : MonoBehaviour
     public void SetHealthSystem(HealthSystem healthSystem)
     {
         this.healthSystem = healthSystem;
-        healthSystem.onDamage += UpdateBar;
-        healthSystem.onDeath += ResetBar;
+        healthSystem.OnDamageEvent += UpdateBar;
+        healthSystem.OnDeathEvent += ResetBar;
         slider.value = 1;
 
         maxHealthText.text = '/' + healthSystem.StartHealth.ToString();
@@ -35,7 +35,7 @@ public class HealthBar : MonoBehaviour
         healthText.text = healthSystem.StartHealth.ToString();
         slider.gameObject.SetActive(false);
 
-        healthSystem.onDamage -= UpdateBar;
-        healthSystem.onDeath -= ResetBar;
+        healthSystem.OnDamageEvent -= UpdateBar;
+        healthSystem.OnDeathEvent -= ResetBar;
     }
 }

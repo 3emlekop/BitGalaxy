@@ -67,8 +67,6 @@ public class Turret : Item
         if (data == null)
         {
             turretData = null;
-            GetComponent<SpriteRenderer>().sprite = null;
-            outlineSpriteRenderer.sprite = null;
             return;
         }
 
@@ -79,7 +77,7 @@ public class Turret : Item
         if (data.Module == null)
             outlineSpriteRenderer.color = data.RarityColor;
         else
-            outlineSpriteRenderer.color = data.Module.Color;
+            outlineSpriteRenderer.color = data.Module.ModuleColor;
 
         if(isActivated == false)
             return;

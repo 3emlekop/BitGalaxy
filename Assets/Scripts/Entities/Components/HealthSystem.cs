@@ -5,10 +5,10 @@ public class HealthSystem : MonoBehaviour
 {
 #region events
     public delegate void OnDeath(bool withLoot);
-    public event OnDeath onDeath;
+    public event OnDeath OnDeathEvent;
 
     public delegate void OnDamage(int gainedHealth);
-    public event OnDamage onDamage;
+    public event OnDamage OnDamageEvent;
 #endregion
 
     [Header("Particles")]
@@ -88,7 +88,7 @@ public class HealthSystem : MonoBehaviour
         amount = isCrit ? Mathf.CeilToInt(amount * 2.5f * (1 - defence)) : Mathf.CeilToInt(amount * (1 - defence));
         CurrentHealth -= amount;
         ValuePopUp(amount, critColor);
-        onDamage?.Invoke(-amount);
+        OnDamageEvent?.Invoke(-amount);
 
         if (CurrentHealth <= 0)
             Die(true);
@@ -115,7 +115,7 @@ public class HealthSystem : MonoBehaviour
         if (ScorePointer.instance != null && withLoot)
             ScorePointer.instance.AddScore(startHealth / 5);
 
-        onDeath?.Invoke(withLoot);
+        OnDeathEvent?.Invoke(withLoot);
     }
 
     private void ValuePopUp(int damage, Color color)
@@ -139,6 +139,6 @@ public class HealthSystem : MonoBehaviour
             CurrentHealth += value;
 
         ValuePopUp(value, healColor);
-        onDamage?.Invoke(value);
+        OnDamageEvent?.Invoke(value);
     }
 }

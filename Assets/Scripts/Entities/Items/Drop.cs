@@ -33,12 +33,8 @@ public class Drop : Item
     {
         if (data == null)
             Debug.LogError("Item data of drop item is null.");
-        else
-        {
-            mainSpriteRenderer.sprite = data.Sprite;
-            outlineSpriteRenderer.color = data.RarityColor;
-        }
-        itemData = data;
+            
+        base.SetData(data);
         return gameObject;
     }
 

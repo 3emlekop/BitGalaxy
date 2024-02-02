@@ -19,7 +19,7 @@ public class ExplosionEmitter : MonoBehaviour
     {
         cameraShake = Camera.main.GetComponent<CameraShake>();
         ownerHealthSystem = GetComponent<HealthSystem>();
-        ownerHealthSystem.onDeath += Explode;
+        ownerHealthSystem.OnDeathEvent += Explode;
 
         flashPrefab.scale = flashScale;
         flash = Instantiate(flashPrefab.gameObject);
@@ -47,5 +47,10 @@ public class ExplosionEmitter : MonoBehaviour
 
         flashTransform.position = owner.position;
         flash.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        ownerHealthSystem.OnDeathEvent -= Explode;
     }
 }

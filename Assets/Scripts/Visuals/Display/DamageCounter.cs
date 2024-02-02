@@ -11,7 +11,7 @@ public class DamageCounter : MonoBehaviour
 
     private void Awake()
     {
-        target.onDamage += AddTotalDamage;
+        target.OnDamageEvent += AddTotalDamage;
         Timer.Create(transform, CountDamage, 10f, true);
         highestDps = PlayerPrefs.GetFloat("highestDps");
     }
@@ -35,5 +35,10 @@ public class DamageCounter : MonoBehaviour
 
         if (dps > 200)
             dpsText.text = "Too much damage!\n Are you legit?";
+    }
+
+    private void OnDisable()
+    {
+        target.OnDamageEvent -= AddTotalDamage;
     }
 }

@@ -21,13 +21,18 @@ public class Asteroid : MonoBehaviour
         asteroid = transform;
         asteroidObject = gameObject;
         ownerHealthSystem = GetComponent<HealthSystem>();
-        ownerHealthSystem.onDeath += PlayDeathSound;
+        ownerHealthSystem.OnDeathEvent += PlayDeathSound;
 
         if(accutateRotation)
             rotation += Random.Range(-30, 30);
         else
             rotation = 90 * Random.Range(0, 4);
         asteroid.Rotate(0, 0, rotation);
+    }
+
+    private void OnDisable()
+    {
+        ownerHealthSystem.OnDeathEvent -= PlayDeathSound;
     }
 
     private void FixedUpdate()

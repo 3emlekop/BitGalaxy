@@ -13,7 +13,7 @@ public class Cargo : MonoBehaviour
 
     private void Start()
     {
-        parentCargoHealthSystem.onDeath += Die;
+        parentCargoHealthSystem.OnDeathEvent += Die;
     }
 
     private void Die(bool withLoot)
@@ -29,5 +29,10 @@ public class Cargo : MonoBehaviour
             dropVisualizeIcon.sprite = null;
 
         dropVisualizeOutline.sprite = dropVisualizeIcon.sprite;
+    }
+
+    private void OnDisable()
+    {
+        parentCargoHealthSystem.OnDeathEvent -= Die;
     }
 }

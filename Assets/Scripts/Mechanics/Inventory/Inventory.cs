@@ -1,36 +1,91 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Inventory : MonoBehaviour
 {
+    [HideInInspector] public UnityEvent OnItemsChanged;
+
     [SerializeField] private Item itemPrefab;
+    [SerializeField] private ItemMenu itemMenu;
+    [SerializeField] private Transform storageTransform;
+    [SerializeField] private bool isPlayerInventory = false;
 
-    private List<Item> items = new List<Item>();
+    public static Inventory playerInventoryInstance;
 
+    public List<Item> items = new List<Item>();
     public int ItemsCount => items.Count;
 
-    public void AddItem(Item item)
+    private int itemIdCounter = 0;
+
+    private void Awake()
     {
-        items.Add(item);
+        if (isPlayerInventory == false)
+            return;
+
+        if (playerInventoryInstance == null)
+            playerInventoryInstance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
-    public void CreateItem(ItemData data)
+    public void AddItem(ItemData data)
     {
-        var item = Instantiate(itemPrefab);
-        items.Add(item);
-        item.SetData(data);
+        if(data == null)
+            return;
+        
+        if(data.Name == string.Empty)
+            return;
+
+        var newItemObject = Instantiate(itemPrefab, storageTransform);
+        newItemObject.SetData(data, itemIdCounter);
+        newItemObject.OnClickEvent += OpenItemMenu;
+
+        items.Add(newItemObject);
+        OnItemsChanged.Invoke();
+        itemIdCounter++;
     }
 
-    public void RemoveItem(Item item)
+    private void OpenItemMenu(int itemId)
     {
-        items.Remove(item);
+        foreach (var item in items)
+        {
+            if (item.InventoryId == itemId)
+            {
+                itemMenu.ApplyInfo(item.Data, item.InventoryId);
+                break;
+            }
+        }
+        itemMenu.gameObject.SetActive(true);
+    }
+
+    public void RemoveItem(int id)
+    {
+        for(int i = 0; i < ItemsCount; i++)
+        {
+            if(items[i].InventoryId == id)
+            {
+                items.RemoveAt(i);
+                Destroy(storageTransform.GetChild(i).gameObject);
+                break;
+            }
+        }
+
+        OnItemsChanged.Invoke();
     }
 
     public void ApplyData(InventoryData data)
     {
-        foreach(var item in data.StoredItems)
-        {
-            CreateItem(item);
-        }
+        foreach (var item in data.StoredItems)
+            AddItem(item);
+    }
+
+    private void OnDisable()
+    {
+        foreach (var item in items)
+            item.OnClickEvent -= OpenItemMenu;
     }
 }

@@ -14,7 +14,7 @@ public class DropHandler : MonoBehaviour
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
-        healthSystem.onDeath += SpawnDrop;
+        healthSystem.OnDeathEvent += SpawnDrop;
         hasDrops = new bool[drop.Length];
 
         owner = transform;
@@ -24,6 +24,11 @@ public class DropHandler : MonoBehaviour
     private void OnEnable()
     {
         RevealDrops();
+    }
+
+    private void OnDisable()
+    {
+        healthSystem.OnDeathEvent -= SpawnDrop;
     }
 
     private void RevealDrops()

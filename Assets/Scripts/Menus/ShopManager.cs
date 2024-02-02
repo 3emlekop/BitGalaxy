@@ -2,24 +2,13 @@ using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
-    [SerializeField] private Item itemPrefab;
-
-    private ItemData[] shopItems;
-
+    [SerializeField] private Inventory shopInventory;
 
     private void Awake()
     {
-        shopItems = ResourceManager.instance.GetAllItems();
+        foreach(var item in ResourceManager.instance.GetAllItems())
+            shopInventory.AddItem(item);
 
-        foreach(var item in shopItems)
-        {
-            AddItem(item);
-        }
-    }
-
-    private void AddItem(ItemData data)
-    {
-        var item = Instantiate(itemPrefab, transform);
-        item.SetData(data);
+        //TODO: Implement unlocked items loading
     }
 }

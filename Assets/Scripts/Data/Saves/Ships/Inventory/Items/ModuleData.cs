@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class ModuleData : ItemData
 {
     private enum ModuleType
@@ -16,7 +17,7 @@ public class ModuleData : ItemData
     [SerializeField] [Range(0, 100)] private int critChanceModifier;
     [SerializeField] private float splashRadiusModifier;
 
-    public Color Color
+    public Color ModuleColor
     {
         get
         {
@@ -39,4 +40,12 @@ public class ModuleData : ItemData
     public int ShootsCounteModifier => shootsCountModifier;
     public int CritChanceModifier => critChanceModifier;
     public float SplashRadiusModifier => splashRadiusModifier;
+    new public ItemType ItemType => ItemType.Modules;
+    new public Sprite Sprite
+    {
+        get
+        {
+            return ResourceManager.instance.GetSprite(Enum.GetName(typeof(ItemType), ItemType), "Module" + moduleType);
+        }
+    }
 }

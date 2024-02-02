@@ -6,7 +6,7 @@ public enum Grade
     F, E, D, C, B, A
 }
 
-[System.Serializable]
+[Serializable]
 public class TurretData : ItemData
 {
     [SerializeField] private int damage;
@@ -32,4 +32,5 @@ public class TurretData : ItemData
     public Grade Grade => grade;
     public ModuleData Module => ResourceManager.instance.GetModule(moduleName);
     public Projectile Projectile => ResourceManager.instance.GetProjectile(projectileName);
+    new public ItemType ItemType => ItemType.Turrets;
 }
